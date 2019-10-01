@@ -24,11 +24,11 @@ int flag = 0;
 unsigned long startM;
 unsigned long currentM;
 
-int led1 = 9;     //GREEN
-int led2 = 10;    //GREEN
-int led3 = 11;    //YELLOW
-int led4 = 12;    //YELLOW
-int led5 = 13;    //RED
+int led1 = 9;     
+int led2 = 10;    
+int led3 = 11;    
+int led4 = 12;    
+int led5 = 13;    
 
 void setup() {
   Serial.begin(9600);
@@ -50,32 +50,38 @@ void setup() {
 
 void loop()
 {
-  if (digitalRead(button) == 1)
+  if (digitalRead(button) == 1)       //D8 of arduino is connected to D4 of nodeMCU
   {
     switch (power) {
       //Normal shoot
       case 0:
         //digitalWrite(LED_BUILTIN, HIGH);
         irsend.sendNEC(0xAAAAAAA1, 32);
-        Serial.print("NormalAttk Sent");
+        Serial.println("NormalAttk Sent");
+        delay(100);
         break;
       //Double Power
       case 1:
         irsend.sendNEC(0xDDDDDDD1, 32);
-        Serial.print("Double Power Sent");
+        Serial.println("Double Power Sent");
+        delay(100);
         break;
       //MEDKIT
       case 2:
         health += 20;
-        Serial.print("Medkit Used");
+        Serial.println("Medkit Used");
+        delay(100);
         break;
        //OneShotKill
       case 4:
         irsend.sendNEC(0xBBBBBBB1, 32);
-        Serial.print("Oneshot Sent");
+        Serial.println("Oneshot Sent");
+        delay(100);
+        flag=0;
         break;
       default:
-      Serial.print("Default Case");
+      Serial.println("Default Case");
+      delay(100);
       break;
     }
     IRrec.enableIRIn();
@@ -87,43 +93,51 @@ void loop()
     if (health > 0 && power != 3) {
       if (IRrec.decode(&results)) {
         if (results.value == normalAttk) {
-          health -= 10;
-          Serial.print("NormalAttk");
+          health =health-10;
+          Serial.println("NormalAttk");
+          Serial.println(health);
+          delay(100);
         }
         else if (results.value == doubleDmg) {
           health -= 20;
-          Serial.print("DoubleDmg");
+          Serial.println("DoubleDmg");
+          delay(100);
         }
         else if (results.value == oneShot) {
           if(health >40) health=40;
           else health=0;
-          Serial.print("OneShot");
+          Serial.println("OneShot");
+          delay(100);
         }
         else if (results.value == tdoubleDmg) {
           startM = millis();
           power = 1;
           flag = 1;
-          Serial.print("Double dmg power");
+          Serial.println("Double dmg power");
+          delay(100);
         }
         else if (results.value == tmedkit) {
           startM = millis();
           power = 2;
           flag = 1;
-          Serial.print("MedKit power");
+          Serial.println("MedKit power");
+          delay(100);
         }
         else if (results.value == tfreeze) {
           startM = millis();
           power = 3;
           flag = 1;
-          Serial.print("freeze power");
+          Serial.println("freeze power");
+          delay(100);
         }
         else if (results.value == toneShot) {
           startM = millis();
           power = 4;
           flag = 1;
-          Serial.print("One shot power");
+          Serial.println("One shot power");
+          delay(100);
         }
-        Serial.print(power+" "+flag);
+        //Serial.println(power+" "+flag);
         IRrec.resume();
       }
       currentM = millis();

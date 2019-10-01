@@ -24,11 +24,11 @@ int flag = 0;
 unsigned long startM;
 unsigned long currentM;
 
-int led1 = 9;     //GREEN
-int led2 = 10;    //GREEN
-int led3 = 11;    //YELLOW
-int led4 = 12;    //YELLOW
-int led5 = 13;    //RED
+int led1 = 9;     
+int led2 = 10;    
+int led3 = 11;    
+int led4 = 12;    
+int led5 = 13;    
 
 void setup() {
   Serial.begin(9600);
@@ -50,7 +50,7 @@ void setup() {
 
 void loop()
 {
-  if (digitalRead(button) == 1)
+  if (digitalRead(button) == 1)       //D8 of arduino is connected to D4 of nodeMCU
   {
     switch (power) {
       //Normal shoot
@@ -73,6 +73,7 @@ void loop()
       case 4:
         irsend.sendNEC(0xBBBBBBB2, 32);
         Serial.print("Oneshot Sent");
+        flag=0;
         break;
       default:
       Serial.print("Default Case");
@@ -168,4 +169,6 @@ void loop()
     digitalWrite(led4, HIGH);
     digitalWrite(led5, HIGH);
   }
+    Serial.println("Health"+health);
+
 }
